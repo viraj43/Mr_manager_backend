@@ -45,3 +45,5 @@ package-lock.json
 *.tgz
 
 services/service.json
+
+MyHelpers/github_token.json
