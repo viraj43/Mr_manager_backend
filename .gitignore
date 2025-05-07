@@ -1,0 +1,45 @@
+# Node modules
+node_modules/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Dependency directories
+jspm_packages/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Build directories
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# IDE configuration files
+.idea/
+.vscode/
+
+# Coverage directory (if using testing tools like Mocha or Jest)
+coverage/
+
+# Temporary files
+*.swp
+*.swo
+
+# Yarn lock file (if using Yarn)
+yarn.lock
+
+# NPM lock file (if using NPM)
+package-lock.json
+
+# Build artifacts
+*.tgz
