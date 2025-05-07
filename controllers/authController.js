@@ -1,35 +1,41 @@
-import { createUserWithEmailAndPassword } from 'firebase/auth';
 import User from '../models/User.js';  // User model
-import { auth } from '../services/firebase.js' // Firebase authentication config
 
-// Sign up new user and save additional details to the database
-export const signupUser = async (req, res) => {
-  const { email, password, name, role } = req.body;  // Extract data from request body
+// Save user details to the database
+export const signupUser= async (req, res) => {
+  const { email, firebaseUID, name, role } = req.body;  // Expect frontend to send these
 
-  if (!email || !password || !name || !role) {
+  if (!email || !firebaseUID || !name || !role) {
     return res.status(400).json({ message: "All fields are required" });
   }
 
   try {
-    // Step 1: Create user in Firebase Auth
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    // Check if user already exists in the local database
+    let existingUser = await User.findOne({ firebaseUID });
 
-    // Step 2: Store user information in MongoDB
-    const firebaseUID = userCredential.user.uid;
+    if (existingUser) {
+      return res.status(200).json({
+        message: 'User already exists in database',
+        user: {
+          id: existingUser._id,
+          email: existingUser.email,
+          name: existingUser.name,
+          role: existingUser.role,
+        },
+      });
+    }
 
-    // Save the user to the database
+    // Save new user info to MongoDB
     const newUser = new User({
       email,
       firebaseUID,
       name,
-      role,  // role can be 'user', 'admin', or others based on your needs
+      role,
     });
 
     await newUser.save();
 
-    // Step 3: Respond with the newly created user data
     res.status(201).json({
-      message: 'User created successfully',
+      message: 'User info saved successfully',
       user: {
         id: newUser._id,
         email: newUser.email,
@@ -38,7 +44,7 @@ export const signupUser = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('Error creating user:', error.message);
+    console.error('Error saving user info:', error.message);
     res.status(500).json({ message: error.message });
   }
 };
