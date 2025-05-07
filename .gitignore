@@ -44,4 +44,4 @@ package-lock.json
 # Build artifacts
 *.tgz
 
-service.json
+services/service.json
