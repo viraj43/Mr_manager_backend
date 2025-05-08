@@ -1,16 +1,14 @@
 import express from 'express';
 import {
   createProject,
-  updateProject,
-  getProjectById,
-  checkGitHubRepo,
+  listUserProjects
 } from '../controllers/projectController.js';
+
+import { authenticateJWT } from '../middlewares/authMiddleware.js';
 
 const router = express.Router();
 
-router.post('/', createProject);
-router.put('/:projectId', updateProject);
-router.get('/:projectId', getProjectById);
-router.get('/github/:owner/:repo', checkGitHubRepo);
+router.post('/', authenticateJWT, createProject);  // apply auth here
+router.get('/', authenticateJWT, listUserProjects);
 
 export default router;

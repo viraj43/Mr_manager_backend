@@ -3,8 +3,8 @@ import User from '../models/User.js';
 import { Octokit } from '@octokit/rest';
 import { generateToken } from '../utils/jwtutility.js';
 
-const CLIENT_ID = process.env.GITHUB_CLIENT_ID;
-const CLIENT_SECRET = GITHUB_CLIENT_SECRET;
+const CLIENT_ID = "";
+const CLIENT_SECRET = "";
 
 
 /**
@@ -44,7 +44,6 @@ export const handleGitHubCallback = async (req, res) => {
     const { login: githubUsername } = userResponse.data;
 
     // Find the user by firebaseUID (This is the correct field for identifying the user)
-    console.log("this is for me ", req.user);
     let user = await User.findOne({ email: req.user.email });
 
     if (!user) {
@@ -127,6 +126,16 @@ export const unlinkGitHub = async (req, res) => {
     user.githubAccessToken = undefined;
 
     await user.save(); // Save the updated user data to the database
+     // Generate JWT for the user
+     const token = generateToken(user);
+
+     res.cookie('token', token, {
+       httpOnly: true,          // Prevents client-side access to the cookie
+       secure: true, // Ensures the cookie is sent over HTTPS in production
+       sameSite: 'none',      // CSRF protection: cookie is only sent for same-site requests
+       maxAge: 24 * 60 * 60 * 1000,
+       path: '/' // Set cookie expiration (1 day)
+     });
 
     res.status(200).json({ message: 'GitHub account unlinked successfully' });
   } catch (error) {

@@ -11,6 +11,7 @@ export const generateToken = (user) => {
     email: user.email,
     name: user.name,
     role: user.role,
+    githubUsername: user.githubUsername
   };
 
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
@@ -19,7 +20,6 @@ export const generateToken = (user) => {
 // Function to verify JWT
 export const verifyToken = (token) => {
   try {
-    console.log(token);
     // Verify the token and return the decoded payload
     return jwt.verify(token, JWT_SECRET);
   } catch (error) {

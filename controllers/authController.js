@@ -13,7 +13,6 @@ export const signupUser = async (req, res) => {
     let existingUser = await User.findOne({ firebaseUID });
 
     if (existingUser) {
-      console.log("I am the fucker")
       return res.status(200).json({
         message: 'User already exists',
         user: existingUser,
@@ -60,7 +59,6 @@ export const signupUser = async (req, res) => {
 
 
 export const loginUser = async (req, res) => {
-  console.log("Login triggerd");
   const { email, firebaseUID } = req.body;  // Expect frontend to send these
 
   if (!email || !firebaseUID) {
@@ -98,7 +96,6 @@ export const loginUser = async (req, res) => {
 
 
 export const details = async (req, res) => {
-  console.log("details triggerd");
   try {
     // Access the user from the decoded token (available in `req.user`)
     const user = await User.findOne({ email: req.user.email });

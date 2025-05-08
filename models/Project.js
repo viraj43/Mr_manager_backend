@@ -24,6 +24,11 @@ const projectSchema = new mongoose.Schema({
     type: String,  // store the GitHub repository URL
     required: true,
   },
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+    required: true,
+  },
 }, {
   timestamps: true,  // adds createdAt and updatedAt fields
 });
