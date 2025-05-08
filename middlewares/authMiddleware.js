@@ -1,22 +1,24 @@
-import admin from '../services/firebase.js';
+import {verifyToken}  from "../utils/jwtutility.js";
 
-const authMiddleware = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+export const authenticateJWT = (req, res, next) => {
+  console.log("Middleware Triggered")
+  const token = req.cookies.token;  // Read token from cookies
+  console.log("Here, I got the token: ", token)
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'No token provided' });
+  if (!token) {
+    return res.status(403).json({ message: 'Access denied, no token provided' });
   }
-
-  const token = authHeader.split(' ')[1];
 
   try {
-    const decodedToken = await admin.auth().verifyIdToken(token);
-    req.user = decodedToken; // this will include uid, email, etc.
+    // Decode the token
+    const decoded = verifyToken(token);
+    console.log(decoded)
+    if (!decoded) {
+      return res.status(401).json({ message: 'Invalid token' });
+    }
+    req.user = decoded;
     next();
   } catch (error) {
-    console.error('Auth error:', error);
-    res.status(401).json({ message: 'Unauthorized' });
+    res.status(500).json({ message: 'Error verifying token' });
   }
 };
-
-export default authMiddleware;
