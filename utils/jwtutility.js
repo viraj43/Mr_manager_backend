@@ -1,19 +1,19 @@
 import jwt from 'jsonwebtoken';
 
 // Secret key for signing JWT (ensure this is securely stored in environment variables)
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret_key';
+const JWT_SECRET = '';
 const JWT_EXPIRATION = '6h'; // JWT expiration time (1 hour)
 
 // Function to generate JWT
 export const generateToken = (user) => {
   const payload = {
+    id: user.id,
     firebaseUID: user.firebaseUID,
     email: user.email,
     name: user.name,
     role: user.role,
     githubUsername: user.githubUsername
   };
-
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRATION });
 };
 

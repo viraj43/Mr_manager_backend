@@ -97,21 +97,21 @@ export const loginUser = async (req, res) => {
 
 export const details = async (req, res) => {
   try {
-    // Access the user from the decoded token (available in `req.user`)
-    const user = await User.findOne({ email: req.user.email });
+    const user = await User.findById(req.user.id);
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Send user details in response
     res.status(200).json({
+      id: user._id,
       email: user.email,
       name: user.name,
       role: user.role,
-      githubUsername: user.githubUsername, // Add more fields as needed
+      githubUsername: user.githubUsername,
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error('Error fetching user details:', error.message);
+    res.status(500).json({ message: 'Server error fetching user details' });
   }
 };
